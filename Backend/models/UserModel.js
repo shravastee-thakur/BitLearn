@@ -31,10 +31,6 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
-    image: {
-      url: { type: String },
-      public_id: { type: String },
-    },
     refreshToken: {
       type: String,
       default: "",

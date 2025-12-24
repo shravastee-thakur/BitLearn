@@ -1,7 +1,6 @@
 import User from "../models/UserModel.js";
 import logger from "../utils/logger.js";
 import sanitize from "mongo-sanitize";
-import aj from "../utils/arcjet.js";
 import { deleteOtp, getOtp, saveOtp } from "../utils/otp.js";
 import sendMail from "../config/sendMail.js";
 import {
@@ -9,6 +8,7 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/jwtToken.js";
+import passport from "passport";
 
 export const register = async (req, res, next) => {
   try {
@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ success: false, message: "User already exist" });
+        .json({ success: false, message: "User already exists" });
     }
 
     const user = await User.create({
@@ -43,19 +43,11 @@ export const register = async (req, res, next) => {
   }
 };
 
+// login with email/password
 export const loginStepOne = async (req, res, next) => {
   try {
     const sanitizeBody = sanitize(req.body);
     const { email, password } = sanitizeBody;
-
-    // rate limit
-    const decision = await aj.protect(req, { email });
-    if (decision.isDenied()) {
-      return res.status(429).json({
-        success: false,
-        message: "Too many attempts. Try again later.",
-      });
-    }
 
     const user = await User.loginWithEmail(email, password);
 
@@ -101,7 +93,7 @@ export const verifyOtp = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-    const storedOtp = await getOtp(email);
+    const storedOtp = await getOtp(user.email);
 
     if (!storedOtp || String(storedOtp) !== otp) {
       const message = !storedOtp
@@ -131,13 +123,51 @@ export const verifyOtp = async (req, res, next) => {
       })
       .json({
         success: true,
-        message: "OTP sent to your email. Please verify.",
+        message: "Logged in successfully.",
         accessToken: newaccessToken,
         userId: user._id,
       });
   } catch (error) {
     logger.error(`Error in verify otp: ${error.message}`);
     next(error);
+  }
+};
+
+// login with Google OAuth
+export const googleAuth = passport.authenticate("google", {
+  scope: ["profile", "email"],
+  session: false,
+});
+
+export const googleCallback = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      // maxAge: 15 * 60 * 1000,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+
+    res.redirect(`${process.env.CLIENT_URL}/courses`);
+  } catch (error) {
+    logger.error(`Google callback error: ${error.message}`);
+    res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
   }
 };
 
