@@ -16,12 +16,13 @@ import {
 } from "../utils/joiValidation.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
 import passport from "passport";
+import { securityMiddleware } from "../middlewares/securityMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerValidation, register);
-router.post("/loginStepOne", loginValidation, loginStepOne);
-router.post("/verifyOtp", otpValidation, verifyOtp);
+router.post("/loginStepOne", securityMiddleware, loginValidation, loginStepOne);
+router.post("/verifyOtp", securityMiddleware, otpValidation, verifyOtp);
 router.post("/refreshHandler", refreshHandler);
 
 // Redirect to Google login

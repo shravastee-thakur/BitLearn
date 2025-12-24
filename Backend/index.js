@@ -8,7 +8,6 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import connectdb from "./config/connectdb.js";
-import { securityMiddleware } from "./middlewares/securityMiddleware.js";
 import passport from "./config/passport.js";
 
 import userRoutes from "./routes/UserRoutes.js";
@@ -20,7 +19,6 @@ connectdb();
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(securityMiddleware);
 app.use(
   cors({
     origin: process.env.CLIENT_URL,

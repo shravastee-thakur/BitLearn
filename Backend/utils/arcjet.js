@@ -16,7 +16,8 @@ const aj = arcjet({
 
     tokenBucket({
       mode: "LIVE", // will block requests
-      characteristics: ["ip.src", "email"],
+      name: "authLimit",
+      characteristics: ["ip.src"],
       refillRate: 5,
       interval: 60, // per minute
       capacity: 20,

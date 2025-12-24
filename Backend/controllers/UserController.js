@@ -87,6 +87,7 @@ export const verifyOtp = async (req, res, next) => {
     }
 
     const user = await User.findById(userId);
+
     if (!user) {
       return res
         .status(404)
@@ -114,7 +115,7 @@ export const verifyOtp = async (req, res, next) => {
     await user.save();
 
     return res
-      .status(200)
+      .status(201)
       .cookie("refreshToken", newrefreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -123,9 +124,15 @@ export const verifyOtp = async (req, res, next) => {
       })
       .json({
         success: true,
-        message: "Logged in successfully.",
+        message: "Logged in successfully",
         accessToken: newaccessToken,
-        userId: user._id,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          verified: user.isVerified,
+        },
       });
   } catch (error) {
     logger.error(`Error in verify otp: ${error.message}`);
@@ -180,13 +187,14 @@ export const refreshHandler = async (req, res, next) => {
         .json({ success: false, message: "Unauthorized: Invalid Token" });
     }
 
-    const decoded = verifyRefreshToken({ refreshToken });
+    const decoded = verifyRefreshToken(refreshToken);
 
     const user = await User.findOne({ _id: decoded.id, refreshToken });
+
     if (!user) {
       return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+        .status(403)
+        .json({ message: "Invalid or expired refresh token" });
     }
 
     const newaccessToken = generateAccessToken(user);
@@ -196,7 +204,7 @@ export const refreshHandler = async (req, res, next) => {
     await user.save();
 
     return res
-      .status(200)
+      .status(201)
       .cookie("refreshToken", newrefreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -205,12 +213,17 @@ export const refreshHandler = async (req, res, next) => {
       })
       .json({
         success: true,
-        message: "OTP sent to your email. Please verify.",
         accessToken: newaccessToken,
-        userId: user._id,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          verified: user.isVerified,
+        },
       });
   } catch (error) {
-    logger.error(`Error in refresh handler: ${error.message}`);
+    logger.error(`Error during refresh handler : ${error.message}`);
     next(error);
   }
 };

@@ -4,7 +4,6 @@ import logger from "../utils/logger.js";
 export const securityMiddleware = async (req, res, next) => {
   try {
     const decision = await aj.protect(req, {
-      email: req.body?.email || "",
       requested: 1,
     });
 
@@ -12,9 +11,10 @@ export const securityMiddleware = async (req, res, next) => {
       logger.warn(`Security Block: ${decision.reason.type} for IP ${req.ip}`);
 
       if (decision.reason.isRateLimit()) {
-        return res
-          .status(429)
-          .json({ message: "Too many requests. Slow down!" });
+        return res.status(429).json({
+          success: false,
+          message: "Too many attempts. Please try again in a minute.",
+        });
       }
 
       if (decision.reason.isBot()) {
