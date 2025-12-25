@@ -64,6 +64,10 @@ const Auth = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.open("http://localhost:3000/api/v1/users/google", "_self");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -153,6 +157,7 @@ const Auth = () => {
 
               <div className="mt-4">
                 <button
+                  onClick={handleGoogleLogin}
                   type="button"
                   className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2.5 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
                 >

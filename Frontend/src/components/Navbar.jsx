@@ -1,12 +1,13 @@
 import { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { verified, name } = useContext(AuthContext);
+  const { verified, name, logout } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,6 +15,13 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
@@ -62,18 +70,27 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
-            <p className="hover:text-gray-200 transition-colors">Courses</p>
-            <p className="hover:text-gray-200 transition-colors">Admin</p>
+            <p className="hover:text-gray-200 transition-colors cursor-pointer">
+              Courses
+            </p>
+            <p className="hover:text-gray-200 transition-colors cursor-pointer">
+              Admin
+            </p>
 
             {verified ? (
               <>
-                <p className="hover:text-gray-200 transition-colors">
+                <p className="hover:text-gray-200 transition-colors cursor-pointer">
                   Welcome, <span className="font-bold">{name}</span>
                 </p>
-                <p className="hover:text-gray-200 transition-colors">Logout</p>
+                <p
+                  onClick={handleLogout}
+                  className="hover:text-gray-200 transition-colors cursor-pointer"
+                >
+                  Logout
+                </p>
               </>
             ) : (
-              <p className="hover:text-gray-200 transition-colors">
+              <p className="hover:text-gray-200 transition-colors cursor-pointer">
                 <Link to={"/login"}>Login</Link>
               </p>
             )}

@@ -154,6 +154,9 @@ export const googleCallback = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
 
     user.refreshToken = refreshToken;
+    if (!user.isVerified) {
+      user.isVerified = true;
+    }
     await user.save();
 
     res.cookie("refreshToken", refreshToken, {

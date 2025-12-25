@@ -106,7 +106,47 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Invalid email or password", {
+      toast.error("Failed to login", {
+        style: {
+          borderRadius: "10px",
+          background: "#FFB5B5",
+          color: "#333",
+        },
+      });
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/users/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.success) {
+        setVerified(false);
+        setName(null);
+        setAccessToken(null);
+        toast.success(res.data.message, {
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to logout", {
         style: {
           borderRadius: "10px",
           background: "#FFB5B5",
@@ -119,7 +159,9 @@ const AuthProvider = ({ children }) => {
 
   return (
     <div>
-      <AuthContext.Provider value={{ login, verifyLoginOtp, verified, name }}>
+      <AuthContext.Provider
+        value={{ login, verifyLoginOtp, verified, name, logout }}
+      >
         {children}
       </AuthContext.Provider>
     </div>

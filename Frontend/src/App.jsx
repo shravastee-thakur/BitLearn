@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import VerifyLogin from "./pages/VerifyLogin";
+import Courses from "./pages/Courses";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/verify-otp" element={<VerifyLogin />} />
+          <Route path="/courses" element={<Courses />} />
         </Routes>
       </BrowserRouter>
     </div>
