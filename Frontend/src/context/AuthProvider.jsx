@@ -9,6 +9,8 @@ const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState("");
   const [verified, setVerified] = useState(false);
   const [name, setName] = useState("");
+  const [role, setRole] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const refreshTokenHandler = async () => {
@@ -25,7 +27,7 @@ const AuthProvider = ({ children }) => {
           setName(res.data.user.name);
           setVerified(res.data.user.verified);
           setUserId(res.data.user.id);
-          // setRole(res.data.user.role);
+          setRole(res.data.user.role);
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -99,9 +101,11 @@ const AuthProvider = ({ children }) => {
           },
         });
 
+        setUser(res.data.user);
         setVerified(res.data.user.verified);
         setName(res.data.user.name);
         setAccessToken(res.data.accessToken);
+        setRole(res.data.user.verified);
         return true;
       }
     } catch (error) {
@@ -160,7 +164,16 @@ const AuthProvider = ({ children }) => {
   return (
     <div>
       <AuthContext.Provider
-        value={{ login, verifyLoginOtp, verified, name, logout, accessToken }}
+        value={{
+          login,
+          verifyLoginOtp,
+          verified,
+          name,
+          logout,
+          accessToken,
+          role,
+          user,
+        }}
       >
         {children}
       </AuthContext.Provider>

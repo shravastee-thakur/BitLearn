@@ -24,7 +24,6 @@ const Auth = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    console.log(formData);
   };
 
   const handleRegister = async (e) => {

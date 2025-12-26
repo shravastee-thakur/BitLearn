@@ -26,7 +26,7 @@ const ComingCourses = () => {
     <section className="py-12 px-4 md:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-        Upcoming Courses
+          Upcoming Courses
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -53,11 +53,11 @@ const ComingCourses = () => {
               </div>
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                 <button className="bg-yellow-300 text-black px-4 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors">
                   Notify Me
                 </button>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

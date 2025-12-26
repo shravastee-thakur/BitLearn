@@ -32,6 +32,12 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    lectures: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lecture",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -49,7 +55,7 @@ courseSchema.pre(
 
       const cloudinaryDeletions = [];
       // Delete the course image from Cloudinary if it exists
-      if (this.image && this.image.public_id) {
+      if (this.image?.public_id) {
         cloudinaryDeletions.push(
           cloudinary.uploader.destroy(this.image.public_id)
         );
@@ -57,7 +63,7 @@ courseSchema.pre(
 
       // Delete videos from lectures if they exist
       courseLectures.forEach((lecture) => {
-        if (lecture.video && lecture.video.public_id) {
+        if (lecture.video?.public_id) {
           cloudinaryDeletions.push(
             cloudinary.uploader.destroy(lecture.video.public_id)
           );
@@ -65,7 +71,7 @@ courseSchema.pre(
       });
 
       await Promise.all(cloudinaryDeletions);
-      await Lecture.deleteMany({ courseId: this._id });
+      await Lecture.deleteMany({ courseId: courseId });
     } catch (error) {
       console.log(error);
     }

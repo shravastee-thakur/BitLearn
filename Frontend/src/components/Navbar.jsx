@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthProvider";
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { verified, name, logout } = useContext(AuthContext);
+  const { verified, name, logout, role } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -71,11 +71,14 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             <p className="hover:text-gray-200 transition-colors cursor-pointer">
-              Courses
+              <Link to={"/courses"}>Courses</Link>
             </p>
-            <p className="hover:text-gray-200 transition-colors cursor-pointer">
-              <Link to={"/admin-panel"}>Admin</Link>
-            </p>
+
+            {role === "admin" && (
+              <p className="hover:text-gray-200 transition-colors cursor-pointer">
+                <Link to={"/admin-panel"}>Admin</Link>
+              </p>
+            )}
 
             {verified ? (
               <>

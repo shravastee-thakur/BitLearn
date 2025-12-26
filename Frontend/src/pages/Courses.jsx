@@ -1,9 +1,19 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import CourseCard from "../components/CourseCard";
 import { CourseContext } from "../context/CourseProvider";
 
 const Courses = () => {
-  const { courses } = useContext(CourseContext);
+  const { getAllCourses } = useContext(CourseContext);
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      const allCourses = await getAllCourses();
+      setCourses(allCourses);
+    };
+
+    loadCourses();
+  }, []);
 
   return (
     <div className="min-h-[60vh] py-20 px-4 sm:px-6 lg:px-8">
@@ -19,9 +29,12 @@ const Courses = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-600 text-lg text-center mt-12">
-            No Courses Yet!
-          </p>
+          <div className="text-center py-16">
+            <p className="text-xl text-gray-600">No Courses Yet!</p>
+            <p className="text-gray-500 mt-2">
+              Check back soon for new learning opportunities.
+            </p>
+          </div>
         )}
       </div>
     </div>
