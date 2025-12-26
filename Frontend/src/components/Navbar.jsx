@@ -74,7 +74,7 @@ const Navbar = () => {
               Courses
             </p>
             <p className="hover:text-gray-200 transition-colors cursor-pointer">
-              Admin
+              <Link to={"/admin-panel"}>Admin</Link>
             </p>
 
             {verified ? (

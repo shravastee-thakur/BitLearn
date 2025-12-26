@@ -13,7 +13,7 @@ import passport from "passport";
 export const register = async (req, res, next) => {
   try {
     const sanitizeBody = sanitize(req.body);
-    const { name, email, password } = sanitizeBody;
+    const { name, email, password, role } = sanitizeBody;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -26,6 +26,7 @@ export const register = async (req, res, next) => {
       name,
       email,
       password,
+      role,
     });
 
     return res.status(201).json({
@@ -35,6 +36,7 @@ export const register = async (req, res, next) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

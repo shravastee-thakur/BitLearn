@@ -4,7 +4,7 @@ const Banner = () => {
   return (
     <div className="flex justify-center">
       <img
-        src="/Banner1.png"
+        src="/Banner.png"
         alt="English course banner"
         className="h-auto w-4/5 pb-8"
       />

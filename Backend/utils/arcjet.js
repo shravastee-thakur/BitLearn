@@ -11,7 +11,7 @@ const aj = arcjet({
     detectBot({
       mode: process.env.NODE_ENV === "production" ? "LIVE" : "DRY_RUN",
       // Block all bots except
-      allow: ["CATEGORY:SEARCH_ENGINE"],
+      allow: ["CATEGORY:SEARCH_ENGINE", "HTTP_CLIENT:POSTMAN"],
     }),
 
     tokenBucket({

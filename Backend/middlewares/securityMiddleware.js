@@ -7,7 +7,7 @@ export const securityMiddleware = async (req, res, next) => {
       requested: 1,
     });
 
-    if (decision.isDenied()) {
+    if (decision.isDenied() && !decision.reason.isDryRun()) {
       logger.warn(`Security Block: ${decision.reason.type} for IP ${req.ip}`);
 
       if (decision.reason.isRateLimit()) {
@@ -26,6 +26,12 @@ export const securityMiddleware = async (req, res, next) => {
       }
 
       return res.status(403).json({ message: "Forbidden" });
+    }
+
+    if (decision.isDenied() && decision.reason.isDryRun()) {
+      logger.info(
+        `[DRY RUN] Would have blocked ${decision.reason.type} for IP ${req.ip}`
+      );
     }
 
     next();
