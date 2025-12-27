@@ -132,6 +132,37 @@ const AdminPanel = () => {
     }
   };
 
+  const [stats, setStats] = useState({
+    totalCourses: "" || 0,
+    totalLectures: "" || 0,
+    totalUsers: "" || 0,
+  });
+
+  useEffect(() => {
+    if (!accessToken) return;
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/v1/admin/getTotalStats",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        console.log(res.data);
+
+        if (res.data.success) {
+          setStats(res.data.stats);
+        }
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      }
+    };
+    fetchStats();
+  }, [accessToken]);
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
@@ -161,12 +192,26 @@ const AdminPanel = () => {
         <div className="bg-white rounded-xl shadow-md p-4 md:p-6">
           {activeTab === "dashboard" && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <StatCard title="Total Courses" value={courses.length} />
-              <StatCard
-                title="Total Lecture Duration"
-                value={courses.reduce((sum, c) => sum + c.duration, 0)}
-              />
-              <StatCard title="Total Users" value={users.length} />
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <p className="text-gray-600 text-sm">Total Courses</p>
+                <p className="text-2xl font-bold text-[#476EAE] mt-1">
+                  {stats.totalCourses}
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <p className="text-gray-600 text-sm">Total Lectures</p>
+                <p className="text-2xl font-bold text-[#476EAE] mt-1">
+                  {stats.totalLectures}
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <p className="text-gray-600 text-sm">Total Users</p>
+                <p className="text-2xl font-bold text-[#476EAE] mt-1">
+                  {stats.totalUsers}
+                </p>
+              </div>
             </div>
           )}
 
@@ -339,13 +384,5 @@ const AdminPanel = () => {
     </div>
   );
 };
-
-// Reusable Stat Card
-const StatCard = ({ title, value }) => (
-  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-    <p className="text-gray-600 text-sm">{title}</p>
-    <p className="text-2xl font-bold text-[#476EAE] mt-1">{value}</p>
-  </div>
-);
 
 export default AdminPanel;

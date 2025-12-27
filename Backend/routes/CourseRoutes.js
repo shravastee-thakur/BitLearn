@@ -6,6 +6,8 @@ import {
   getMyCourses,
   getSingleCourse,
   getSingleLecture,
+  getUserProgress,
+  toggleLectureProgress,
 } from "../controllers/CourseController.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
 
@@ -15,7 +17,14 @@ router.get("/getAllCourses", getAllCourses);
 router.get("/getSingleCourse/:courseId", getSingleCourse);
 router.get("/getMyCourses", authenticate, getMyCourses);
 
-router.get("/getAllLectures/:courseId", fetchLectures);
-router.get("/getSingleLecture/:lectureId", getSingleLecture);
+router.get("/getAllLectures/:courseId", authenticate, fetchLectures);
+router.get("/getSingleLecture/:lectureId", authenticate, getSingleLecture);
+
+router.get("/getCourseProgress/:courseId", authenticate, getUserProgress);
+router.post(
+  "/toggleLectureProgress/:courseId/lecture/:lectureId",
+  authenticate,
+  toggleLectureProgress
+);
 
 export default router;

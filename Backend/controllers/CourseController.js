@@ -1,5 +1,6 @@
 import Course from "../models/CourseModel.js";
 import Lecture from "../models/LectureModel.js";
+import Progress from "../models/ProgressModel.js";
 import logger from "../utils/logger.js";
 
 export const getAllCourses = async (_, res, next) => {
@@ -92,6 +93,79 @@ export const getSingleLecture = async (req, res, next) => {
     });
   } catch (error) {
     logger.error(`Error in fetching single lecture: ${error.message}`);
+    next(error);
+  }
+};
+
+export const getUserProgress = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.user.id;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not found" });
+    }
+
+    const progress = await Progress.findOne({ course: courseId, user: userId });
+
+    const lectLength = course.lectures.length;
+    const completedLec = progress ? progress.completedLectures.length : 0;
+
+    return res.status(200).json({
+      success: true,
+      progressData: {
+        completedLec,
+        lectLength,
+        completedLecturesIds: progress ? progress.completedLectures : [],
+      },
+    });
+  } catch (error) {
+    logger.error(`Error in get course progress: ${error.message}`);
+    next(error);
+  }
+};
+
+export const toggleLectureProgress = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { courseId, lectureId } = req.params;
+
+    let progress = await Progress.findOne({ course: courseId, user: userId });
+    if (!progress) {
+      progress = await Progress.create({
+        user: userId,
+        course: courseId,
+        completedLectures: [],
+      });
+    }
+
+    const isAlreadyCompleted = progress.completedLectures.includes(lectureId);
+
+    if (isAlreadyCompleted) {
+      progress.completedLectures = progress.completedLectures.filter(
+        (id) => id.toString() !== lectureId
+      );
+    } else {
+      progress.completedLectures.push(lectureId);
+    }
+
+    await progress.save();
+
+    const course = await Course.findById(courseId);
+
+    res.status(201).json({
+      success: true,
+      progressData: {
+        completedLec: progress.completedLectures.length,
+        lectLength: course.lectures.length,
+        completedLecturesIds: progress.completedLectures,
+      },
+    });
+  } catch (error) {
+    logger.error(`Error in toggle lecture progress: ${error.message}`);
     next(error);
   }
 };

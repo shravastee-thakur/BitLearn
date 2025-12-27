@@ -1,23 +1,25 @@
 // Lectures.jsx
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { TiTick } from "react-icons/ti";
-import { server } from "../../main";
+import { AuthContext } from "../context/AuthProvider";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import DoneIcon from "@mui/icons-material/Done";
 
 const Lectures = ({ user }) => {
-  const { id: courseId } = useParams();
+  const { accessToken, role } = useContext(AuthContext);
+  const { courseId } = useParams();
   const navigate = useNavigate();
 
   // Authorization guard
-  useEffect(() => {
-    if (!user) return;
-    const isAuthorized =
-      user.role === "admin" ||
-      (user.subscription && user.subscription.includes(courseId));
-    if (!isAuthorized) navigate("/");
-  }, [user, courseId, navigate]);
+  // useEffect(() => {
+  //   if (!user) return;
+  //   const isAuthorized =
+  //     user.role === "admin" ||
+  //     (user.subscription && user.subscription.includes(courseId));
+  //   if (!isAuthorized) navigate("/");
+  // }, [user, courseId, navigate]);
 
   // State
   const [lectures, setLectures] = useState([]);
@@ -27,6 +29,7 @@ const Lectures = ({ user }) => {
   const [showForm, setShowForm] = useState(false);
 
   // Form state
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [video, setVideo] = useState(null);
@@ -43,20 +46,27 @@ const Lectures = ({ user }) => {
 
   // Fetch lectures
   const fetchLectures = async () => {
+    if (!accessToken) return null;
+
     try {
-      const { data } = await axios.get(`${server}/api/lectures/${courseId}`, {
-        headers: { token: localStorage.getItem("token") },
-      });
-      setLectures(data.lectures || []);
-      setLoading(false);
-      // Auto-select first lecture if none is selected
-      if (data.lectures?.length > 0 && !currentLecture) {
-        fetchLecture(data.lectures[0]._id);
+      const res = await axios.get(
+        `http://localhost:3000/api/v1/courses/getAllLectures/${courseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+
+      if (res.data.success) {
+        setLectures(res.data.lectures);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Failed to fetch lectures:", error);
       setLoading(false);
-      toast.error("Failed to load lectures");
     }
   };
 
@@ -64,10 +74,18 @@ const Lectures = ({ user }) => {
   const fetchLecture = async (id) => {
     setLecLoading(true);
     try {
-      const { data } = await axios.get(`${server}/api/lecture/${id}`, {
-        headers: { token: localStorage.getItem("token") },
-      });
-      setCurrentLecture(data.lecture);
+      const res = await axios.get(
+        `http://localhost:3000/api/v1/courses/getSingleLecture/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.success) {
+        setCurrentLecture(res.data.lecture);
+      }
     } catch (error) {
       console.error("Failed to fetch lecture:", error);
       toast.error("Failed to load lecture");
@@ -79,18 +97,26 @@ const Lectures = ({ user }) => {
   // Fetch progress
   const fetchProgress = async () => {
     try {
-      const { data } = await axios.get(
-        `${server}/api/user/progress?course=${courseId}`,
+      const res = await axios.get(
+        `http://localhost:3000/api/v1/courses/getCourseProgress/${courseId}`,
         {
-          headers: { token: localStorage.getItem("token") },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
         }
       );
-      setProgressData({
-        completed: data.courseProgressPercentage || 0,
-        completedLec: data.completedLectures?.length || 0,
-        lectLength: data.allLectures || 0,
-        progress: data.progress || [],
-      });
+      console.log(res.data);
+
+      if (res.data.success) {
+        const { completedLec, lectLength, completedLecturesIds } =
+          res.data.progressData;
+        setProgressData({
+          completedLec: completedLec,
+          lectLength: lectLength,
+          progress: completedLecturesIds,
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch progress:", error);
     }
@@ -100,10 +126,26 @@ const Lectures = ({ user }) => {
   const addProgress = async (lectureId) => {
     try {
       await axios.post(
-        `${server}/api/user/progress?course=${courseId}&lectureId=${lectureId}`,
+        `http://localhost:3000/api/v1/courses/toggleLectureProgress/${courseId}/lecture/${lectureId}`,
         {},
-        { headers: { token: localStorage.getItem("token") } }
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
       );
+
+      if (res.data.success) {
+        const { completedLec, lectLength, completedLecturesIds } =
+          res.data.progressData;
+        setProgressData({
+          completedLec,
+          lectLength,
+          progress: completedLecturesIds,
+        });
+        toast.success("Progress updated");
+      }
       fetchProgress();
     } catch (error) {
       console.error("Failed to update progress:", error);
@@ -125,28 +167,48 @@ const Lectures = ({ user }) => {
     setBtnLoading(true);
 
     const formData = new FormData();
+    formData.append("courseId", courseId);
     formData.append("title", title);
     formData.append("description", description);
-    if (video) formData.append("file", video);
+    if (video) formData.append("video", video);
 
     try {
-      const { data } = await axios.post(
-        `${server}/api/course/${courseId}`,
+      const res = await axios.post(
+        `http://localhost:3000/api/v1/admin/addLecture`,
         formData,
         {
-          headers: { token: localStorage.getItem("token") },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-      toast.success(data.message);
+      if (res.data.success) {
+        toast.success(res.data.message, {
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+
+        setTitle("");
+        setDescription("");
+        setVideo(null);
+        setVideoPreview("");
+        setShowForm(false);
+      }
+
       fetchLectures();
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setVideo(null);
-      setVideoPreview("");
-      setShowForm(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to add lecture");
+      console.log(error);
+      toast.error("Failed to add lecture", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     } finally {
       setBtnLoading(false);
     }
@@ -156,32 +218,51 @@ const Lectures = ({ user }) => {
   const deleteHandler = async (id) => {
     if (!confirm("Are you sure you want to delete this lecture?")) return;
     try {
-      const { data } = await axios.delete(`${server}/api/lecture/${id}`, {
-        headers: { token: localStorage.getItem("token") },
-      });
-      toast.success(data.message);
-      fetchLectures();
-      if (currentLecture?._id === id) {
-        setCurrentLecture(null);
+      const res = await axios.delete(
+        `http://localhost:3000/api/v1/admin/deleteLecture/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.success) {
+        toast.success(res.data.message, {
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        fetchLectures();
+        if (currentLecture?._id === id) {
+          setCurrentLecture(null);
+        }
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete lecture");
+      console.log(error);
+      toast.error("Failed to delete lecture", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     }
   };
 
   // Initial data fetch
   useEffect(() => {
-    if (courseId) {
+    if (courseId && accessToken) {
       fetchLectures();
       fetchProgress();
     }
-  }, [courseId]);
+  }, [courseId, accessToken]);
 
   // Check if lecture is completed
   const isLectureCompleted = (lectureId) => {
-    return progressData.progress.some((p) =>
-      p.completedLectures?.includes(lectureId)
-    );
+    return progressData.progress.includes(lectureId);
   };
 
   if (loading) {
@@ -204,13 +285,6 @@ const Lectures = ({ user }) => {
             {progressData.completedLec} of {progressData.lectLength} lectures
             completed
           </p>
-          <div className="mt-2 w-full bg-gray-700 h-2.5 rounded-full overflow-hidden">
-            <div
-              className="bg-green-500 h-full rounded-full"
-              style={{ width: `${progressData.completed}%` }}
-            ></div>
-          </div>
-          <p className="text-xs mt-1">{progressData.completed}% complete</p>
         </div>
       </div>
 
@@ -224,7 +298,7 @@ const Lectures = ({ user }) => {
           ) : currentLecture?.video ? (
             <div className="bg-white rounded-xl shadow overflow-hidden">
               <video
-                src={`${server}/${currentLecture.video}`}
+                src={currentLecture.video.url}
                 controls
                 controlsList="nodownload noremoteplayback"
                 disablePictureInPicture
@@ -252,7 +326,7 @@ const Lectures = ({ user }) => {
         {/* Right: Lecture List & Form */}
         <div className="lg:w-1/3 space-y-4">
           {/* Add Lecture Button (Admin only) */}
-          {user?.role === "admin" && (
+          {role === "admin" && (
             <button
               onClick={() => setShowForm(!showForm)}
               className="w-full py-2 px-4 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors"
@@ -262,7 +336,7 @@ const Lectures = ({ user }) => {
           )}
 
           {/* Add Lecture Form */}
-          {showForm && user?.role === "admin" && (
+          {showForm && role === "admin" && (
             <div className="bg-white rounded-xl shadow p-5">
               <h3 className="text-lg font-semibold mb-4 text-gray-800">
                 Add Lecture
@@ -336,30 +410,35 @@ const Lectures = ({ user }) => {
             <div className="divide-y">
               {lectures.length > 0 ? (
                 lectures.map((lecture, index) => (
-                  <div key={lecture._id} className="p-3 hover:bg-gray-50">
+                  <div key={lecture._id} className="p-3 hover:bg-gray-50 flex">
                     <div
-                      onClick={() => fetchLecture(lecture._id)}
-                      className={`flex items-center justify-between cursor-pointer p-2 rounded-lg ${
+                      className={`flex mr-2 items-center justify-between cursor-pointer p-2 rounded-lg w-11/12 ${
                         currentLecture?._id === lecture._id
                           ? "bg-[#476EAE] text-white"
                           : "text-gray-700"
                       }`}
                     >
-                      <span>
-                        {index + 1}. {lecture.title}
-                      </span>
-                      {isLectureCompleted(lecture._id) && (
-                        <TiTick className="text-green-500 text-xl" />
+                      <div className="flex items-center gap-2">
+                        <span onClick={() => fetchLecture(lecture._id)}>
+                          {index + 1}. {lecture.title}
+                        </span>
+                        {isLectureCompleted(lecture._id) && (
+                          <DoneIcon className="text-green-500 text-xl flex-shrink-0" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      {role === "admin" && (
+                        <DeleteForeverOutlinedIcon
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevents triggering fetchLecture
+                            deleteHandler(lecture._id);
+                          }}
+                          className="text-red-500 hover:text-red-700 cursor-pointer flex-shrink-0"
+                          fontSize="small"
+                        />
                       )}
                     </div>
-                    {user?.role === "admin" && (
-                      <button
-                        onClick={() => deleteHandler(lecture._id)}
-                        className="mt-2 w-full py-1.5 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    )}
                   </div>
                 ))
               ) : (

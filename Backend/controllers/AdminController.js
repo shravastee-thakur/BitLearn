@@ -165,9 +165,9 @@ export const deleteLecture = async (req, res, next) => {
 
 export const totalStats = async (req, res, next) => {
   try {
-    const totalCourses = (await Course.find()).length();
-    const totalLectures = (await Lecture.find()).length();
-    const totalUsers = (await User.find()).length();
+    const totalCourses = await Course.countDocuments();
+    const totalLectures = await Lecture.countDocuments();
+    const totalUsers = await User.countDocuments();
 
     const stats = {
       totalCourses,
@@ -175,11 +175,11 @@ export const totalStats = async (req, res, next) => {
       totalUsers,
     };
 
-    return res.json({
-      stats,
-    });
+    return res.json({ success: true, stats });
   } catch (error) {
     logger.error(`Error in getting total stats`);
     next(error);
   }
 };
+
+

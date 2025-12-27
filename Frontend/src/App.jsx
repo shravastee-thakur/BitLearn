@@ -6,6 +6,7 @@ import Auth from "./pages/Auth";
 import VerifyLogin from "./pages/VerifyLogin";
 import Courses from "./pages/Courses";
 import AdminPanel from "./pages/AdminPanel";
+import Lectures from "./pages/Lectures";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/login" element={<Auth />} />
           <Route path="/verify-otp" element={<VerifyLogin />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/lectures/:courseId" element={<Lectures />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
         </Routes>
       </BrowserRouter>
