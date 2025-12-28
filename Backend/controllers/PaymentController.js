@@ -3,6 +3,7 @@ import Course from "../models/CourseModel.js";
 import User from "../models/UserModel.js";
 import Stripe from "stripe";
 import logger from "../utils/logger.js";
+import sendMail from "../config/sendMail.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -41,7 +42,8 @@ export const stripePayment = async (req, res, next) => {
         },
       ],
       metadata: { courseId: courseId.toString(), userId: userId.toString() },
-      success_url: `${process.env.CLIENT_URL}/payment-success`,
+      // success_url: `${process.env.CLIENT_URL}/payment-success`,
+      success_url: `${process.env.CLIENT_URL}/payment-success/${courseId}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/payment-failure`,
     });
 

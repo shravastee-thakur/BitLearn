@@ -1,6 +1,7 @@
 import Course from "../models/CourseModel.js";
 import Lecture from "../models/LectureModel.js";
 import Progress from "../models/ProgressModel.js";
+import User from "../models/UserModel.js";
 import logger from "../utils/logger.js";
 
 export const getAllCourses = async (_, res, next) => {
@@ -38,10 +39,18 @@ export const getSingleCourse = async (req, res, next) => {
 
 export const getMyCourses = async (req, res, next) => {
   try {
-    // returns every document whose ID matches one of the IDs in that array
-    const courses = await Course.find({ _id: req.user.subscription }).select(
-      "-createdBy"
-    );
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const courses = await Course.find({
+      _id: { $in: user.subscription },
+    }).select("-createdBy");
+
     if (!courses) {
       return res
         .status(404)

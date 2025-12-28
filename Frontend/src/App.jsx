@@ -34,7 +34,10 @@ const App = () => {
 
           <Route path="/admin-panel" element={<AdminPanel />} />
 
-          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route
+            path="/payment-success/:courseId"
+            element={<PaymentSuccess />}
+          />
           <Route path="/payment-failure" element={<PaymentFailure />} />
         </Routes>
       </BrowserRouter>

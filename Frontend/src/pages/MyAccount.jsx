@@ -21,8 +21,9 @@ const MyAccount = () => {
 
     setIsDeleting(true);
     try {
-      const res = await axios.delete(
+      const res = await axios.post(
         "http://localhost:3000/api/v1/users/deleteUser",
+        { confirmationText },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

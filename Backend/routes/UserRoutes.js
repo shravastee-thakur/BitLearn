@@ -36,6 +36,6 @@ router.get(
 );
 
 router.post("/logout", authenticate, logout);
-router.delete("/deleteUser", authenticate, deleteUser);
+router.post("/deleteUser", authenticate, deleteUser);
 
 export default router;

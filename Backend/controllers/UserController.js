@@ -225,6 +225,7 @@ export const refreshHandler = async (req, res, next) => {
           email: user.email,
           role: user.role,
           verified: user.isVerified,
+          subscription: user.subscription,
         },
       });
   } catch (error) {

@@ -13,6 +13,7 @@ import passport from "./config/passport.js";
 import userRoutes from "./routes/UserRoutes.js";
 import courseRoutes from "./routes/CourseRoutes.js";
 import adminRoutes from "./routes/AdminRoutes.js";
+import paymentRoutes from "./routes/PaymentRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -45,8 +46,8 @@ app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/admin", adminRoutes);
 // http://localhost:3000/api/v1/admin/createCourse
 
-
-
+app.use("/api/v1/payment", paymentRoutes);
+// http://localhost:3000/api/v1/payment/stripePayment
 
 app.use((req, _, next) => {
   next({ statusCode: 404, message: `Route not found: ${req.originalUrl}` });

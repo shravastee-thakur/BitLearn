@@ -3,13 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { PaymentContext } from "../context/PaymentProvider";
 
 const CourseCard = ({ course, onDelete }) => {
   const navigate = useNavigate();
   const { role, accessToken, user, verified } = useContext(AuthContext);
+  const { stripePayment } = useContext(PaymentContext);
 
-  const handleGetStartedClick = () =>
+  console.log("user", user);
+
+  const handleGetStartedClick = () => {
     navigate(verified ? `/course/${course._id}` : "/login");
+  };
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this course?")) return;
@@ -45,7 +50,10 @@ const CourseCard = ({ course, onDelete }) => {
     }
   };
 
-  // Determine button text and action
+  const handleEnroll = async (courseId) => {
+    const success = await stripePayment(courseId);
+  };
+
   const showStudyButton =
     role === "admin" || user?.subscription?.includes(course._id);
 
@@ -75,25 +83,26 @@ const CourseCard = ({ course, onDelete }) => {
         </p>
 
         <div className="mt-auto flex flex-col gap-2">
-          {verified ? (
-            <button className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50">
-              Enroll now
-            </button>
-          ) : (
+          {!verified ? (
             <button
               onClick={handleGetStartedClick}
               className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
             >
               Get Started
             </button>
-          )}
-
-          {showStudyButton && (
+          ) : showStudyButton ? (
+            <button
+              onClick={() => navigate(`/lectures/${course._id}`)}
+              className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors"
+            >
+              Study
+            </button>
+          ) : (
             <button
               onClick={() => navigate(`/lectures/${course._id}`)}
               className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
             >
-              Study
+              Enroll now
             </button>
           )}
 

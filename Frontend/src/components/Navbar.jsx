@@ -84,8 +84,8 @@ const Navbar = () => {
               <>
                 <p className="hover:text-gray-200 transition-colors">
                   Welcome,
-                  <span className="font-bold cursor-pointer">
-                    <Link to={"/my-profile"}>{name}</Link>{" "}
+                  <span className="ml-1 font-bold cursor-pointer">
+                    <Link to={"/my-profile"}>{name}</Link>
                   </span>
                 </p>
                 <p
