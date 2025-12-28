@@ -277,7 +277,7 @@ const Lectures = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 px-4 sm:px-6">
+    <div className="min-h-screen py-6 px-4 sm:px-6">
       {/* Progress Bar */}
       <div className="max-w-4xl mx-auto mb-6">
         <div className="bg-gray-800 text-white rounded-lg p-3 text-center">

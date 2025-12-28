@@ -29,7 +29,7 @@ const CourseStudy = ({ user }) => {
   // Show loading state
   if (loading || !course) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-pulse w-64 h-64 bg-gray-200 rounded-xl mx-auto mb-6"></div>
           <p className="text-gray-600">Loading course details...</p>

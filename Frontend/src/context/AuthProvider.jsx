@@ -105,7 +105,7 @@ const AuthProvider = ({ children }) => {
         setVerified(res.data.user.verified);
         setName(res.data.user.name);
         setAccessToken(res.data.accessToken);
-        setRole(res.data.user.verified);
+        setRole(res.data.user.role);
         return true;
       }
     } catch (error) {
@@ -136,6 +136,7 @@ const AuthProvider = ({ children }) => {
       );
       if (res.data.success) {
         setVerified(false);
+        setRole(null);
         setName(null);
         setAccessToken(null);
         toast.success(res.data.message, {

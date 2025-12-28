@@ -82,8 +82,11 @@ const Navbar = () => {
 
             {verified ? (
               <>
-                <p className="hover:text-gray-200 transition-colors cursor-pointer">
-                  Welcome, <span className="font-bold">{name}</span>
+                <p className="hover:text-gray-200 transition-colors">
+                  Welcome,
+                  <span className="font-bold cursor-pointer">
+                    <Link to={"/my-profile"}>{name}</Link>{" "}
+                  </span>
                 </p>
                 <p
                   onClick={handleLogout}

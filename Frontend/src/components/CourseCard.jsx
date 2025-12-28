@@ -46,8 +46,8 @@ const CourseCard = ({ course, onDelete }) => {
   };
 
   // Determine button text and action
-  // const showStudyButton =
-  //   role === "admin" || user?.subscription?.includes(course._id);
+  const showStudyButton =
+    role === "admin" || user?.subscription?.includes(course._id);
 
   return (
     <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden w-full max-w-[280px] hover:shadow-lg transition-shadow duration-300">
@@ -76,11 +76,8 @@ const CourseCard = ({ course, onDelete }) => {
 
         <div className="mt-auto flex flex-col gap-2">
           {verified ? (
-            <button
-              onClick={() => navigate(`/lectures/${course._id}`)}
-              className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
-            >
-              Study
+            <button className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50">
+              Enroll now
             </button>
           ) : (
             <button
@@ -88,6 +85,15 @@ const CourseCard = ({ course, onDelete }) => {
               className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
             >
               Get Started
+            </button>
+          )}
+
+          {showStudyButton && (
+            <button
+              onClick={() => navigate(`/lectures/${course._id}`)}
+              className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
+            >
+              Study
             </button>
           )}
 

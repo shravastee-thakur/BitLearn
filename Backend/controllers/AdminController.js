@@ -181,5 +181,3 @@ export const totalStats = async (req, res, next) => {
     next(error);
   }
 };
-
-

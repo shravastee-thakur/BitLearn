@@ -265,6 +265,15 @@ export const deleteUser = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
+    const { confirmationText } = req.body;
+
+    if (confirmationText !== "DELETE") {
+      return res.status(400).json({
+        success: false,
+        message: "Please type 'DELETE' to confirm account deletion.",
+      });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -287,7 +296,7 @@ export const deleteUser = async (req, res, next) => {
         message: "Your account has been deleted successfully.",
       });
   } catch (error) {
-    logger.error(`Error in refresh handler: ${error.message}`);
+    logger.error(`Error in deleteUser handler: ${error.message}`);
     next(error);
   }
 };
