@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -11,6 +11,18 @@ import MyAccount from "./pages/MyAccount";
 import MyCourses from "./pages/MyCourses";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentFailure from "./pages/payment/PaymentFailure";
+import { AuthContext } from "./context/AuthProvider";
+import { useContext } from "react";
+
+const ProtectedAdminRoute = ({ children }) => {
+  const { role } = useContext(AuthContext);
+
+  if (role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 const App = () => {
   return (
@@ -32,7 +44,14 @@ const App = () => {
           <Route path="/my-profile" element={<MyAccount />} />
           <Route path="/my-courses" element={<MyCourses />} />
 
-          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route
+            path="/admin-panel"
+            element={
+              <ProtectedAdminRoute>
+                <AdminPanel />
+              </ProtectedAdminRoute>
+            }
+          />
 
           <Route
             path="/payment-success/:courseId"

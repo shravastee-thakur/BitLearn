@@ -54,8 +54,8 @@ const PaymentProvider = ({ children }) => {
         toast.success(res.data.message, {
           style: {
             borderRadius: "10px",
-            background: "#FFB5B5",
-            color: "#333",
+            background: "#333",
+            color: "#fff",
           },
         });
         return true;
@@ -65,8 +65,8 @@ const PaymentProvider = ({ children }) => {
       toast.error("Failed to pay", {
         style: {
           borderRadius: "10px",
-          background: "#FFB5B5",
-          color: "#333",
+          background: "#333",
+          color: "#fff",
         },
       });
       return false;

@@ -65,11 +65,13 @@ export const deleteCourse = async (req, res, next) => {
 
 export const getAllUsers = async (_, res, next) => {
   try {
-    const users = await User.find().select("name email subscription");
-    if (!users) {
+    const users = await User.find()
+      .select("name email subscription")
+      .populate("subscription", "title");
+    if (users.length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "Users not found" });
+        .json({ success: false, message: "No users found in database" });
     }
 
     return res.status(200).json({ success: true, users });

@@ -13,6 +13,7 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [courses, setCourses] = useState([]);
   const [users, setUsers] = useState([]);
+  console.log("user", users);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -356,7 +357,7 @@ const AdminPanel = () => {
                         Email
                       </th>
                       <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                        Role
+                        Course
                       </th>
                     </tr>
                   </thead>
@@ -370,7 +371,16 @@ const AdminPanel = () => {
                           {user.email}
                         </td>
                         <td className="px-4 py-2 text-sm text-gray-500">
-                          {user.role}
+                          <div className="flex flex-wrap gap-1">
+                            {user.subscription.map((course) => (
+                              <span
+                                key={course._id}
+                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                              >
+                                {course.title}
+                              </span>
+                            ))}
+                          </div>
                         </td>
                       </tr>
                     ))}

@@ -301,3 +301,27 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).select(
+      "name email role verified subscription"
+    );
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    logger.error(`Error in fetch current user: ${error.message}`);
+    next(error);
+  }
+};

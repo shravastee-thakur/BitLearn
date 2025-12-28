@@ -8,7 +8,7 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const { courseId } = useParams();
   const { verifyPayment } = useContext(PaymentContext);
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, fetchCurrentUser } = useContext(AuthContext);
 
   const sessionId = searchParams.get("session_id");
 
@@ -21,6 +21,7 @@ const PaymentSuccess = () => {
       const runVerification = async () => {
         const success = await verifyPayment(sessionId, courseId, accessToken);
         if (success) {
+          await fetchCurrentUser();
           setTimeout(() => navigate("/my-courses"), 5000);
         }
       };

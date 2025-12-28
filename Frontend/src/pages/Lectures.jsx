@@ -12,15 +12,6 @@ const Lectures = ({ user }) => {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
-  // Authorization guard
-  // useEffect(() => {
-  //   if (!user) return;
-  //   const isAuthorized =
-  //     user.role === "admin" ||
-  //     (user.subscription && user.subscription.includes(courseId));
-  //   if (!isAuthorized) navigate("/");
-  // }, [user, courseId, navigate]);
-
   // State
   const [lectures, setLectures] = useState([]);
   const [currentLecture, setCurrentLecture] = useState(null);
@@ -111,6 +102,7 @@ const Lectures = ({ user }) => {
       if (res.data.success) {
         const { completedLec, lectLength, completedLecturesIds } =
           res.data.progressData;
+
         setProgressData({
           completedLec: completedLec,
           lectLength: lectLength,
@@ -125,7 +117,7 @@ const Lectures = ({ user }) => {
   // Mark lecture as complete
   const addProgress = async (lectureId) => {
     try {
-      await axios.post(
+      const res = await axios.post(
         `http://localhost:3000/api/v1/courses/toggleLectureProgress/${courseId}/lecture/${lectureId}`,
         {},
         {
@@ -146,7 +138,6 @@ const Lectures = ({ user }) => {
         });
         toast.success("Progress updated");
       }
-      fetchProgress();
     } catch (error) {
       console.error("Failed to update progress:", error);
     }
@@ -262,7 +253,8 @@ const Lectures = ({ user }) => {
 
   // Check if lecture is completed
   const isLectureCompleted = (lectureId) => {
-    return progressData.progress.includes(lectureId);
+    const completed = progressData.progress.includes(lectureId);
+    return completed;
   };
 
   if (loading) {

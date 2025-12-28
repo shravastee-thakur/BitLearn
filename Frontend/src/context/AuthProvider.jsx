@@ -10,7 +10,8 @@ const AuthProvider = ({ children }) => {
   const [verified, setVerified] = useState(false);
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     const refreshTokenHandler = async () => {
@@ -35,6 +36,8 @@ const AuthProvider = ({ children }) => {
         } else {
           console.error("Error during refresh token check:", error);
         }
+      } finally {
+        setAuthLoading(false); // Set loading to false when done
       }
     };
 
@@ -162,6 +165,30 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/users/getCurrentUser",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        setUser(res.data.user);
+        return true;
+      }
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+      return false;
+    }
+  };
+
+  if (authLoading) {
+    return <div>Loading authentication...</div>;
+  }
+
   return (
     <div>
       <AuthContext.Provider
@@ -174,6 +201,7 @@ const AuthProvider = ({ children }) => {
           accessToken,
           role,
           user,
+          fetchCurrentUser,
         }}
       >
         {children}

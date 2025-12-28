@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
@@ -9,8 +9,6 @@ const CourseCard = ({ course, onDelete }) => {
   const navigate = useNavigate();
   const { role, accessToken, user, verified } = useContext(AuthContext);
   const { stripePayment } = useContext(PaymentContext);
-
-  console.log("user", user);
 
   const handleGetStartedClick = () => {
     navigate(verified ? `/course/${course._id}` : "/login");
@@ -40,7 +38,7 @@ const CourseCard = ({ course, onDelete }) => {
       }
     } catch (error) {
       console.error("Delete failed:", error);
-      toast.success("Failed to delete course", {
+      toast.error("Failed to delete course", {
         style: {
           borderRadius: "10px",
           background: "#333",
@@ -54,8 +52,9 @@ const CourseCard = ({ course, onDelete }) => {
     const success = await stripePayment(courseId);
   };
 
-  const showStudyButton =
-    role === "admin" || user?.subscription?.includes(course._id);
+  const hasAccess = user?.subscription.includes(course._id) ?? false;
+
+  const showStudyButton = role === "admin" || hasAccess;
 
   return (
     <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden w-full max-w-[280px] hover:shadow-lg transition-shadow duration-300">
@@ -99,7 +98,7 @@ const CourseCard = ({ course, onDelete }) => {
             </button>
           ) : (
             <button
-              onClick={() => navigate(`/lectures/${course._id}`)}
+              onClick={() => handleEnroll(course._id)}
               className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#476EAE] focus:ring-opacity-50"
             >
               Enroll now

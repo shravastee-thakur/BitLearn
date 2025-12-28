@@ -115,7 +115,7 @@ export const verifyPayment = async (req, res, next) => {
     </div>
 
     <p style="margin-top: 20px;">
-      <a href="${process.env.FRONTEND_URL}/course/${course._id}" 
+      <a href="${process.env.CLIENT_URL}/lectures/${course._id}" 
          style="background-color: #476EAE; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
          Start Learning Now
       </a>

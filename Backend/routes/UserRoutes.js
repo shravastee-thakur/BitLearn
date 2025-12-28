@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteUser,
+  getCurrentUser,
   googleAuth,
   googleCallback,
   loginStepOne,
@@ -23,6 +24,7 @@ const router = express.Router();
 router.post("/register", registerValidation, register);
 router.post("/loginStepOne", securityMiddleware, loginValidation, loginStepOne);
 router.post("/verifyOtp", securityMiddleware, otpValidation, verifyOtp);
+router.get("/getCurrentUser", authenticate, getCurrentUser);
 router.post("/refreshHandler", refreshHandler);
 
 // Redirect to Google login
