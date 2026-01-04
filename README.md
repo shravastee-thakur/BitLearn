@@ -1,3 +1,9 @@
+
+<img width="1261" height="595" alt="BitLearn1" src="https://github.com/user-attachments/assets/d0957cb2-8c94-47a9-bb37-6c03c1d9b033" />
+<img width="1263" height="597" alt="BitLearn2" src="https://github.com/user-attachments/assets/99be3cd0-9314-4638-8cb9-e40376f63378" />
+<img width="1263" height="597" alt="BitLearn3" src="https://github.com/user-attachments/assets/90fb7189-3173-44e6-a9f5-34d3a40d0d48" />
+
+
 # BitLearn | Secure E-Learning Management System
 BitLearn is a production-grade Learning Management System (LMS) built with the MERN stack. Designed with a "Security-First" philosophy, it integrates advanced bot protection, rate limiting, and robust authentication flows to simulate a real-world enterprise environment.
 
