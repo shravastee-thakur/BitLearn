@@ -11,7 +11,7 @@ const MyCourses = () => {
     if (!accessToken) return;
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/courses/getMyCourses",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/courses/getMyCourses`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

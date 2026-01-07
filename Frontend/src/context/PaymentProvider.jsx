@@ -6,11 +6,12 @@ import { AuthContext } from "./AuthProvider";
 export const PaymentContext = createContext();
 
 const PaymentProvider = ({ children }) => {
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, fetchCurrentUser } = useContext(AuthContext);
+
   const stripePayment = async (courseId) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/payment/stripePayment",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/payment/stripePayment`,
         { courseId },
         {
           headers: {
@@ -22,6 +23,8 @@ const PaymentProvider = ({ children }) => {
       if (res.data.success) {
         const checkoutUrl = res.data.url;
         window.location.href = checkoutUrl;
+
+        await fetchCurrentUser();
         return true;
       }
     } catch (error) {
@@ -29,8 +32,8 @@ const PaymentProvider = ({ children }) => {
       toast.error("Failed to pay", {
         style: {
           borderRadius: "10px",
-          background: "#FFB5B5",
-          color: "#333",
+          background: "#333",
+          color: "#fff",
         },
       });
       return false;
@@ -40,7 +43,7 @@ const PaymentProvider = ({ children }) => {
   const verifyPayment = async (sessionId, courseId, token) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/payment/verifyPayment",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/payment/verifyPayment`,
         { sessionId, courseId },
         {
           headers: {

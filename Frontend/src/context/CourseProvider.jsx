@@ -7,7 +7,7 @@ const CourseProvider = ({ children }) => {
   const getAllCourses = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/courses/getAllCourses",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/courses/getAllCourses`,
         {
           headers: {
             "Content-Type": "application/json",

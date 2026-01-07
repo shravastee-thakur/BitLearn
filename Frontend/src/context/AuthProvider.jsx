@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
     const refreshTokenHandler = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:3000/api/v1/users/refreshHandler",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/refreshHandler`,
           {},
           {
             withCredentials: true,
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
           console.error("Error during refresh token check:", error);
         }
       } finally {
-        setAuthLoading(false); // Set loading to false when done
+        setAuthLoading(false);
       }
     };
 
@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
     const { email, password } = formData;
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/loginStepOne",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/loginStepOne`,
         { email, password },
         {
           headers: {
@@ -75,8 +75,8 @@ const AuthProvider = ({ children }) => {
       toast.error("Invalid email or password", {
         style: {
           borderRadius: "10px",
-          background: "#FFB5B5",
-          color: "#333",
+          background: "#333",
+          color: "#fff",
         },
       });
       return false;
@@ -86,7 +86,7 @@ const AuthProvider = ({ children }) => {
   const verifyLoginOtp = async (otp) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/verifyOtp",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/verifyOtp`,
         { userId, otp },
         {
           headers: {
@@ -116,8 +116,8 @@ const AuthProvider = ({ children }) => {
       toast.error("Failed to login", {
         style: {
           borderRadius: "10px",
-          background: "#FFB5B5",
-          color: "#333",
+          background: "#333",
+          color: "#fff",
         },
       });
       return false;
@@ -127,7 +127,7 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/logout",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/logout`,
         {},
         {
           headers: {
@@ -157,8 +157,8 @@ const AuthProvider = ({ children }) => {
       toast.error("Failed to logout", {
         style: {
           borderRadius: "10px",
-          background: "#FFB5B5",
-          color: "#333",
+          background: "#333",
+          color: "#fff",
         },
       });
       return false;
@@ -168,7 +168,7 @@ const AuthProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/users/getCurrentUser",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/getCurrentUser`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

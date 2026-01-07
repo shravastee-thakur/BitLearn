@@ -21,6 +21,7 @@ const Navbar = () => {
     const success = await logout();
     if (success) {
       navigate("/");
+      closeMenu();
     }
   };
 
@@ -30,7 +31,6 @@ const Navbar = () => {
       <nav className="bg-[#476EAE] text-white sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-8 lg:px-16 py-4 flex justify-between items-center">
           {/* Logo */}
-          {/* <div className="text-2xl font-bold text-[#FFEF5F]">BitLearn</div> */}
           <div>
             <Link to={"/"} className="flex items-center">
               <svg
@@ -133,34 +133,47 @@ const Navbar = () => {
             </button>
 
             <nav className="flex flex-col space-y-6 mt-4">
-              <a
-                href="#"
-                className="text-xl hover:text-gray-200 transition-colors"
+              <p
+                className="text-md hover:text-gray-200 transition-colors"
                 onClick={closeMenu}
               >
-                Welcome
-              </a>
-              <a
-                href="#"
-                className="text-xl hover:text-gray-200 transition-colors"
-                onClick={closeMenu}
-              >
-                Courses
-              </a>
-              <a
-                href="#"
-                className="text-xl hover:text-gray-200 transition-colors"
-                onClick={closeMenu}
-              >
-                Admin
-              </a>
-              <a
-                href="#"
-                className="text-xl hover:text-gray-200 transition-colors"
-                onClick={closeMenu}
-              >
-                Login
-              </a>
+                <Link to={"/courses"}>Courses</Link>
+              </p>
+              {role === "admin" && (
+                <p
+                  className="text-md hover:text-gray-200 transition-colors"
+                  onClick={closeMenu}
+                >
+                  <Link to={"/admin-panel"}>Admin</Link>
+                </p>
+              )}
+
+              {verified ? (
+                <>
+                  <p className="hover:text-gray-200 transition-colors">
+                    Welcome,
+                    <span
+                      onClick={closeMenu}
+                      className="ml-1 font-bold cursor-pointer"
+                    >
+                      <Link to={"/my-profile"}>{name}</Link>
+                    </span>
+                  </p>
+                  <p
+                    onClick={handleLogout}
+                    className="hover:text-gray-200 transition-colors cursor-pointer"
+                  >
+                    Logout
+                  </p>
+                </>
+              ) : (
+                <p
+                  onClick={closeMenu}
+                  className="hover:text-gray-200 transition-colors cursor-pointer"
+                >
+                  <Link to={"/login"}>Login</Link>
+                </p>
+              )}
             </nav>
           </div>
         </div>

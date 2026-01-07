@@ -1,6 +1,6 @@
 // Lectures.jsx
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../context/AuthProvider";
@@ -10,7 +10,6 @@ import DoneIcon from "@mui/icons-material/Done";
 const Lectures = ({ user }) => {
   const { accessToken, role } = useContext(AuthContext);
   const { courseId } = useParams();
-  const navigate = useNavigate();
 
   // State
   const [lectures, setLectures] = useState([]);
@@ -41,7 +40,9 @@ const Lectures = ({ user }) => {
 
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/v1/courses/getAllLectures/${courseId}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/courses/getAllLectures/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -66,7 +67,9 @@ const Lectures = ({ user }) => {
     setLecLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/v1/courses/getSingleLecture/${id}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/courses/getSingleLecture/${id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -79,7 +82,6 @@ const Lectures = ({ user }) => {
       }
     } catch (error) {
       console.error("Failed to fetch lecture:", error);
-      toast.error("Failed to load lecture");
     } finally {
       setLecLoading(false);
     }
@@ -89,7 +91,9 @@ const Lectures = ({ user }) => {
   const fetchProgress = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/v1/courses/getCourseProgress/${courseId}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/courses/getCourseProgress/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -97,7 +101,6 @@ const Lectures = ({ user }) => {
           withCredentials: true,
         }
       );
-      console.log(res.data);
 
       if (res.data.success) {
         const { completedLec, lectLength, completedLecturesIds } =
@@ -118,7 +121,9 @@ const Lectures = ({ user }) => {
   const addProgress = async (lectureId) => {
     try {
       const res = await axios.post(
-        `http://localhost:3000/api/v1/courses/toggleLectureProgress/${courseId}/lecture/${lectureId}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/courses/toggleLectureProgress/${courseId}/lecture/${lectureId}`,
         {},
         {
           headers: {
@@ -136,7 +141,6 @@ const Lectures = ({ user }) => {
           lectLength,
           progress: completedLecturesIds,
         });
-        toast.success("Progress updated");
       }
     } catch (error) {
       console.error("Failed to update progress:", error);
@@ -165,7 +169,7 @@ const Lectures = ({ user }) => {
 
     try {
       const res = await axios.post(
-        `http://localhost:3000/api/v1/admin/addLecture`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/addLecture`,
         formData,
         {
           headers: {
@@ -210,7 +214,7 @@ const Lectures = ({ user }) => {
     if (!confirm("Are you sure you want to delete this lecture?")) return;
     try {
       const res = await axios.delete(
-        `http://localhost:3000/api/v1/admin/deleteLecture/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/deleteLecture/${id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

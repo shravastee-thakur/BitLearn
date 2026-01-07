@@ -25,8 +25,8 @@ const PaymentFailure = () => {
             Go Back
           </button>
           <button
-            onClick={() => navigate("/my-bookings")}
-            className="flex-1 py-3 px-4 bg-[#2f7003] hover:bg-[#255a02] text-white font-medium rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2f7003]"
+            onClick={() => navigate("/courses")}
+            className="flex-1 py-3 px-4 bg-[#476EAE] hover:bg-[#3a5a8f] text-white font-medium rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#476EAE]"
           >
             Retry Payment
           </button>

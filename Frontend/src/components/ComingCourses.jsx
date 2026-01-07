@@ -1,5 +1,3 @@
-import React from "react";
-
 const ComingCourses = () => {
   const courses = [
     {
@@ -43,7 +41,7 @@ const ComingCourses = () => {
               />
 
               {/* Overlay */}
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
+              <div className="absolute inset-0 bg-black bg-opacity-10 flex flex-col justify-end p-6">
                 <span
                   className={`inline-block px-3 py-1 text-xs font-semibold text-white rounded-full ${course.color} mb-2`}
                 >

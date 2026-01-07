@@ -19,7 +19,9 @@ const CourseCard = ({ course, onDelete }) => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:3000/api/v1/admin/deleteCourse/${course._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/deleteCourse/${
+          course._id
+        }`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -53,8 +55,7 @@ const CourseCard = ({ course, onDelete }) => {
   };
 
   const hasAccess = user?.subscription.includes(course._id) ?? false;
-
-  const showStudyButton = role === "admin" || hasAccess;
+  const showStudyButton = hasAccess;
 
   return (
     <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden w-full max-w-[280px] hover:shadow-lg transition-shadow duration-300">
@@ -95,6 +96,13 @@ const CourseCard = ({ course, onDelete }) => {
               className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors"
             >
               Study
+            </button>
+          ) : role === "admin" ? (
+            <button
+              onClick={() => navigate(`/lectures/${course._id}`)}
+              className="px-4 py-2 bg-[#476EAE] text-white rounded-lg font-medium hover:bg-[#3a5a8f] transition-colors"
+            >
+              Add Lectures
             </button>
           ) : (
             <button

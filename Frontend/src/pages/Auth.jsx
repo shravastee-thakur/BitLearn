@@ -30,7 +30,7 @@ const Auth = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/users/register",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/register`,
         formData,
         {
           headers: {
@@ -52,6 +52,13 @@ const Auth = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error("Failed to register", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     }
   };
 
@@ -64,7 +71,10 @@ const Auth = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:3000/api/v1/users/google", "_self");
+    window.open(
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/google`,
+      "_self"
+    );
   };
 
   return (

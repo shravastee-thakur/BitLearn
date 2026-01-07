@@ -32,7 +32,7 @@ const AdminPanel = () => {
     const fetchUsers = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/v1/admin/getAllUsers",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/getAllUsers`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ const AdminPanel = () => {
           setUsers(res.data.users);
         }
       } catch (error) {
-        console.log(error);
+        console.log("Failed to fetch users", error);
       }
     };
     fetchUsers();
@@ -86,7 +86,7 @@ const AdminPanel = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/admin/createCourse",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/createCourse`,
         formData,
         {
           headers: {
@@ -120,14 +120,14 @@ const AdminPanel = () => {
       const freshCourses = await getAllCourses();
       setCourses(freshCourses);
     } catch (error) {
-      toast.success("Failed to create course", {
+      console.log("Create course error", error);
+      toast.error("Failed to create course", {
         style: {
           borderRadius: "10px",
           background: "#333",
           color: "#fff",
         },
       });
-      console.log(error);
     } finally {
       setBtnLoading(false);
     }
@@ -144,7 +144,7 @@ const AdminPanel = () => {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/v1/admin/getTotalStats",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/getTotalStats`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -157,8 +157,8 @@ const AdminPanel = () => {
         if (res.data.success) {
           setStats(res.data.stats);
         }
-      } catch (err) {
-        console.error("Failed to fetch stats", err);
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
       }
     };
     fetchStats();
@@ -375,7 +375,7 @@ const AdminPanel = () => {
                             {user.subscription.map((course) => (
                               <span
                                 key={course._id}
-                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                                className="px-2 py-1 text-blue-700 text-xs font-medium"
                               >
                                 {course.title}
                               </span>

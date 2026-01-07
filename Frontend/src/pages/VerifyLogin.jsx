@@ -11,7 +11,6 @@ const VerifyLogin = () => {
   const handleOtp = async (e) => {
     e.preventDefault();
     const success = await verifyLoginOtp(otp);
-
     if (success) {
       navigate("/");
     }

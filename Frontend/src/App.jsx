@@ -13,6 +13,7 @@ import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentFailure from "./pages/payment/PaymentFailure";
 import { AuthContext } from "./context/AuthProvider";
 import { useContext } from "react";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const ProtectedAdminRoute = ({ children }) => {
   const { role } = useContext(AuthContext);
@@ -58,6 +59,8 @@ const App = () => {
             element={<PaymentSuccess />}
           />
           <Route path="/payment-failure" element={<PaymentFailure />} />
+
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </div>
