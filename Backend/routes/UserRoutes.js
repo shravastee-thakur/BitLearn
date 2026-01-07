@@ -37,6 +37,8 @@ router.get(
   googleCallback
 );
 
+
+
 router.post("/logout", authenticate, logout);
 router.post("/deleteUser", authenticate, deleteUser);
 
