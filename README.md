@@ -5,54 +5,40 @@
 
 
 # BitLearn | Secure E-Learning Management System
-BitLearn is a production-grade Learning Management System (LMS) built with the MERN stack. Designed with a "Security-First" philosophy, it integrates advanced bot protection, rate limiting, and robust authentication flows to simulate a real-world enterprise environment.
+BitLearn is an E-Learning Management System (LMS) developed to explore the intersection of full-stack development and web security. Rather than just building a functional platform, I used this project as a sandbox to implement "Security-First" principles, focusing on how to protect user data and system integrity in a modern web environment.
 
-Developed during the 2025 semester break as a capstone project in full-stack engineering and web security.
+## Security & Architecture Focus
+This project served as a dive into hardening a Node.js backend. I moved beyond basic logic to implement:
 
-## Security & Architecture Highlights
-This project goes beyond basic CRUD operations by implementing a hardened backend architecture:
+- **Intelligent Shielding:** Integrated Arcjet to experiment with bot detection and proactive rate limiting, moving beyond simple middleware to protect against automated scripts.
 
-- **Advanced Shielding**: Utilizes Arcjet for intelligent rate limiting and bot protection to prevent automated attacks.
+- **Authentication Flows:** Implemented a multi-layered approach using Google OAuth 2.0 and JWT stored in secure, httpOnly cookies to practice industry-standard session management.
 
-- **Encrypted Authentication**: Multi-layered auth using Google OAuth 2.0 and JWT stored in secure, httpOnly cookies.
+- **Defensive Coding:** Focused on preventing common vulnerabilities by using JOI for schema validation, mongo-sanitize for NoSQL injection protection, and Helmet for secure header management.
 
-- **Data Integrity**: Input validation via JOI, protection against NoSQL injection with mongo-sanitize, and specialized security headers using Helmet.
+- **Fast Session Handling:** Leveraged Upstash Redis for high-performance OTP storage and tracking, ensuring a smooth 2FA (Two-Factor Authentication) experience.
 
-- **Session Management**: High-performance OTP storage and session handling using Upstash Redis.
-
-- **Logging**: Comprehensive system activity and error tracking with Winston.
+- **Structured Logging:** Used Winston to create a reliable audit trail for debugging and monitoring system activity.
 
 ## Key Features
-- Course Management: Full lifecycle for courses including video content hosting.
+- Course Lifecycle: Complete management of educational content, including video hosting integration.
 
-- Secure Payments: Integrated Stripe API for handling enrollments and financial transactions.
+- Role-Based Access Control (RBAC): Established clear permission boundaries between Students, Instructors, and Admins to learn granular access management.
 
-- RBAC (Role-Based Access Control): Granular permissions for Students, Instructors, and Admins.
+- Secure Enrollments: Integrated the Stripe API to handle the flow of digital transactions safely.
 
-- 2FA (Two-Factor Authentication): Enhanced account security via Redis-backed OTP verification.
-
-- Media Handling: Optimized image and video uploads managed via Cloudinary.
+- Media Management: Handled optimized image and video processing through Cloudinary and Multer.
 
 ## Tech Stack
-### Backend
-- Node.js & Express.js: Core server framework (v5.x).
+- **Backend:** Node.js & Express.js (following a modular structure).
 
-- MongoDB & Mongoose: NoSQL database with schema modeling.
+- **Database:** MongoDB & Mongoose for flexible data modeling.
 
-- Redis (Upstash): Serverless caching for OTPs and rate-limit tracking.
+- **Caching/Security:** Redis (Upstash) for stateful data and Arcjet for security-as-code.
 
-- Arcjet: Security-as-code for bot detection and rate limiting.
+- **Frontend:** React.js for a responsive, component-based user interface.
 
-### Frontend (Integrated)
-- React.js: Component-based UI logic.
+- **Utilities:** Passport.js (OAuth), Bcrypt (Password Hashing), and Axios.
 
-- Axios: Promise-based HTTP client for API communication.
-
-### DevOps & Utilities
-- Cloudinary: Cloud-based media management.
-
-- Passport.js: Authentication middleware for Google OAuth strategy.
-
-- Bcrypt: Password hashing with salted rounds.
-
-- Multer: Multipart/form-data handling for file uploads.
+### Why I Built This
+BitLearn was born out of a curiosity about web security. As a fresher, I wanted to understand not just how to build features, but how to protect them. This project allowed me to practice the "Security-First" mindset, teaching me how to think like a developer while anticipating the challenges of the open web.
